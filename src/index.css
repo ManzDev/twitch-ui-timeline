@@ -1,3 +1,11 @@
+:root {
+  --width: 1024px;
+  --height: 768px;
+  --bgcolor: #212226;
+  --font-sans: jost, sans-serif;
+  --emphasis-color: #444;
+}
+
 body {
   background: #ffbf60;
 }
@@ -9,14 +17,6 @@ body {
 }
 
 .ui-window {
-  --width: 1024px;
-  --height: 768px;
-  --bgcolor: #212226;
-  --font-sans: Jost, sans-serif;
-  --column-size: 75px;
-  --row-size: 75px;
-  --emphasis-color: #444;
-
   width: var(--width);
   min-height: var(--height);
   background: var(--bgcolor);
@@ -85,7 +85,6 @@ body {
         margin: 0;
       }
     }
-
   }
 
   & .buttons {
@@ -96,13 +95,16 @@ body {
 
     & .button {
       font-family: var(--font-sans);
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #fff;
+      font-size: 1.25rem;
+      min-height: 2.5rem;
       text-decoration: none;
       border: 2px solid #999;
       border-radius: 0.35rem;
       padding: 0.25rem 1rem;
+      font-weight: bold;
+      display: grid;
+      align-items: center;
+      color: #fff;
 
       &.filled {
         border-color: transparent;

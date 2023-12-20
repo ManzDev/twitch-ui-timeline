@@ -2,6 +2,12 @@ const DEFAULT_WIDTH = 4;
 const DEFAULT_START = 1;
 const DEFAULT_COLOR = "#7048e8";
 
+const MAX_SIZE = 100;
+const MIN_SIZE = 2;
+
+const MAX_OFFSET = 100;
+const MIN_OFFSET = 1;
+
 class TimelineItem extends HTMLElement {
   constructor() {
     super();
@@ -10,18 +16,23 @@ class TimelineItem extends HTMLElement {
 
   static get styles() {
     return /* css */`
-      .container {
+      :host {
+        display: grid;
+        background: color-mix(in srgb, var(--item-color), black 20%);
         width: calc(var(--item-size) - 1rem);
         height: calc(var(--row-size) - 1.2rem);
-        background-color: var(--item-color);
+        transform: translateX(calc(var(--item-offset) + 0.5rem));
         border-radius: 0.5rem;
+        box-shadow: 0 0 10px 5px #0002;
+        position: absolute;
+      }
+
+      .container {
+        width: 100%;
+        height: 100%;
         overflow: hidden;
         display: grid;
         place-content: center;
-        transform: translateX(calc(var(--item-offset) + 0.5rem));
-        position: absolute;
-        top: 0.6rem;
-        box-shadow: 0 0 10px 5px #0002;
 
         & h1 {
           font-family: var(--font-sans);
@@ -46,13 +57,31 @@ class TimelineItem extends HTMLElement {
   }
 
   connectedCallback() {
-    this.start = this.getAttribute("start") ?? DEFAULT_START;
-    this.width = this.getAttribute("width") ?? DEFAULT_WIDTH;
+    this.start = parseInt(this.getAttribute("start")) ?? DEFAULT_START;
+    this.width = parseInt(this.getAttribute("width")) ?? DEFAULT_WIDTH;
     this.color = this.getAttribute("color") ?? DEFAULT_COLOR;
     this.render();
-    this.style.setProperty("--item-size", `calc(${this.width} * var(--column-size))`);
-    this.style.setProperty("--item-offset", `calc(${this.start - 1} * var(--column-size))`);
+
+    this.update();
+
+    this.style.setProperty("--item-size", "calc(var(--item-width) * var(--column-size))");
+    this.style.setProperty("--item-offset", "calc(calc(var(--item-start) - 1) * var(--column-size))");
     this.style.setProperty("--item-color", this.color);
+  }
+
+  setSize(step = 1) {
+    this.width = Math.min(Math.max(MIN_SIZE, this.width + step), MAX_SIZE);
+    this.update();
+  }
+
+  setOffset(step = 1) {
+    this.start = Math.min(Math.max(MIN_OFFSET, this.start + step), MAX_OFFSET);
+    this.update();
+  }
+
+  update() {
+    this.style.setProperty("--item-width", this.width);
+    this.style.setProperty("--item-start", this.start);
   }
 
   render() {
